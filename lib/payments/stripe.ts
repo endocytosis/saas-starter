@@ -7,8 +7,22 @@ import {
   updateTeamSubscription
 } from '@/lib/db/queries';
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil'
+let stripeClient: Stripe | undefined;
+
+// Constructing eagerly would break every route that merely imports this module
+// when STRIPE_SECRET_KEY has not been set yet.
+export const stripe = new Proxy({} as Stripe, {
+  get(_target, property) {
+    if (!stripeClient) {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+      }
+      stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: '2025-08-27.basil'
+      });
+    }
+    return stripeClient[property as keyof Stripe];
+  }
 });
 
 export async function createCheckoutSession({

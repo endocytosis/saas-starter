@@ -6,11 +6,27 @@ import { SubmitButton } from './submit-button';
 // Prices are fresh for one hour max
 export const revalidate = 3600;
 
+type StripePrices = Awaited<ReturnType<typeof getStripePrices>>;
+type StripeProducts = Awaited<ReturnType<typeof getStripeProducts>>;
+
+async function getPlans(): Promise<{
+  prices: StripePrices;
+  products: StripeProducts;
+}> {
+  try {
+    const [prices, products] = await Promise.all([
+      getStripePrices(),
+      getStripeProducts(),
+    ]);
+    return { prices, products };
+  } catch (error) {
+    console.error('Could not load plans from Stripe:', error);
+    return { prices: [], products: [] };
+  }
+}
+
 export default async function PricingPage() {
-  const [prices, products] = await Promise.all([
-    getStripePrices(),
-    getStripeProducts(),
-  ]);
+  const { prices, products } = await getPlans();
 
   const basePlan = products.find((product) => product.name === 'Base');
   const plusPlan = products.find((product) => product.name === 'Plus');
