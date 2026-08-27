@@ -13,6 +13,10 @@ const waitlistSchema = z.object({
 });
 
 export const joinWaitlist = validatedAction(waitlistSchema, async (data) => {
+  if (!supabase) {
+    return { error: 'Waitlist is not configured yet.' };
+  }
+
   const { error } = await supabase.from('waitlist_signups').insert({
     email: data.email.trim().toLowerCase(),
     use_case: data.useCase?.trim() || null,
@@ -34,6 +38,8 @@ export const joinWaitlist = validatedAction(waitlistSchema, async (data) => {
 });
 
 export async function getWaitlistCount() {
+  if (!supabase) return null;
+
   const { data, error } = await supabase.rpc('waitlist_count');
 
   if (error || typeof data !== 'number') {
