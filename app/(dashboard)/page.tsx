@@ -15,7 +15,7 @@ export default async function HomePage() {
   const waitlistCount = await getWaitlistCount();
 
   return (
-    <main className="bg-white">
+    <main className="bg-blue-600">
       <Hero waitlistCount={waitlistCount} />
       <Features />
       <HowItWorks />

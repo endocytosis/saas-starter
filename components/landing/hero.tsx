@@ -4,7 +4,7 @@ import { WaitlistForm } from './waitlist-form';
 
 export function Hero({ waitlistCount }: { waitlistCount: number | null }) {
   return (
-    <section className="relative overflow-hidden border-b border-slate-200 bg-white">
+    <section className="relative overflow-hidden border-b border-blue-500 bg-blue-600">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_-10%,rgba(249,115,22,0.10),transparent_45%),radial-gradient(circle_at_85%_0%,rgba(15,23,42,0.06),transparent_40%)]"
